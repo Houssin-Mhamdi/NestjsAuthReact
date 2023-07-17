@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 
@@ -20,4 +20,17 @@ export class UserController {
             password: await bcrypt.hash(password,saltOrRounds)
         })
     }
+    @Post("login")
+   async login(@Body("email")email:string, @Body("password")password:string){
+    const user = await this.userService.findOne({email:email})
+    if(!user){
+        throw new BadRequestException("invalid credentials")
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch){
+        throw new BadRequestException("invalid credentials")
+    }
+
+    return user
+} 
 }

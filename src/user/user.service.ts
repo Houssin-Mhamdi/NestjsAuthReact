@@ -10,4 +10,8 @@ export class UserService {
    async save(body){
         return this.userRepository.save(body);
    }
+
+   async findOne(options){
+      return this.userRepository.findOneBy(options);
+   }
 }
