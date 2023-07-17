@@ -1,10 +1,13 @@
-import { BadRequestException, Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
+import { JwtService } from '@nestjs/jwt';
+
 import * as bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
 
 @Controller('user')
 export class UserController {
-    constructor( private userService:UserService){}
+    constructor( private userService:UserService,private jwtService: JwtService){}
     @Post("register")
    async register(@Body() body:any){
         if(body.password !== body.password_confirm){
@@ -21,7 +24,7 @@ export class UserController {
         })
     }
     @Post("login")
-   async login(@Body("email")email:string, @Body("password")password:string){
+   async login(@Res({ passthrough: true }) response: Response, @Body("email")email:string, @Body("password")password:string){
     const user = await this.userService.findOne({email:email})
     if(!user){
         throw new BadRequestException("invalid credentials")
@@ -31,6 +34,18 @@ export class UserController {
         throw new BadRequestException("invalid credentials")
     }
 
-    return user
+    const paylode = {
+        sub:user.id,
+        email:user.email
+    }
+    const access_token = await this.jwtService.signAsync(paylode,{expiresIn:"30s"}) 
+    const refresh_token = await this.jwtService.signAsync(paylode) 
+    response.cookie("refresh_token",refresh_token,{
+        httpOnly:true,
+        maxAge: 7*24*60*1000
+    })
+    return {
+        token:access_token, 
+    }
 } 
 }
