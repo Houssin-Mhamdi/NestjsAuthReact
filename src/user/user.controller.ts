@@ -1,11 +1,12 @@
-import { BadRequestException, Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException,Body, Controller, Get, HttpCode, Post, Req, Res, UnauthorizedException, UseGuards,Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserGuard } from './user.guard';
 
 import * as bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-@Controller('user')
+@Controller()
 export class UserController {
     constructor( private userService:UserService,private jwtService: JwtService){}
     @Post("register")
@@ -23,6 +24,9 @@ export class UserController {
             password: await bcrypt.hash(password,saltOrRounds)
         })
     }
+
+    
+    @HttpCode(200)
     @Post("login")
    async login(@Res({ passthrough: true }) response: Response, @Body("email")email:string, @Body("password")password:string){
     const user = await this.userService.findOne({email:email})
@@ -48,4 +52,10 @@ export class UserController {
         token:access_token, 
     }
 } 
+
+@UseGuards(UserGuard)
+@Get('profile')
+getProfile(@Request() req) {
+  return req.user;
+}
 }
