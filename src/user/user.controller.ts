@@ -53,7 +53,7 @@ export class UserController {
     }
 } 
 
-@UseGuards(UserGuard)
+@UseGuards()
 @Get('profile')
 getProfile(@Request() req) {
   return req.user;
