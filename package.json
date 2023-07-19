@@ -24,6 +24,7 @@
     "@anchan828/nest-sendgrid": "^0.6.48",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/platform-express": "^8.0.0",

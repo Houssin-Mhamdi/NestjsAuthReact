@@ -2,18 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { SendGridModule } from '@anchan828/nest-sendgrid';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 import { EmailController } from './email.controller';
-import { EmailService } from './email.service';
+import { SendgridService } from './sendgrid.service';
 
 
 @Module({
   imports: [
-    SendGridModule.forRoot({
-   
-      apikey:"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"
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
     type: 'postgres',
     database: 'testDB',
@@ -27,6 +23,6 @@ import { EmailService } from './email.service';
   UserModule,
 ],
   controllers: [EmailController],
-  providers: [EmailService],
+  providers: [SendgridService],
 })
 export class AppModule {}
