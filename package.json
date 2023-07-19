@@ -21,12 +21,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@anchan828/nest-sendgrid": "^0.6.48",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^10.0.0",
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "mysql2": "^3.5.1",
