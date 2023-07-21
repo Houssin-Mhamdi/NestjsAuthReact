@@ -5,6 +5,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { EmailService } from 'src/email/email.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([User]),JwtModule.register({
@@ -13,7 +14,7 @@ import { jwtConstants } from './constants';
         signOptions: { expiresIn: '60s' },
       }),],
     controllers: [UserController],
-    providers: [UserService],
+    providers: [UserService,EmailService],
 
 })
 export class UserModule {}

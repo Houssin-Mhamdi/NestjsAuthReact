@@ -2,14 +2,24 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
+import { SendGridModule } from '@anchan828/nest-sendgrid';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailModule } from './email/email.module';
 import { ConfigModule } from '@nestjs/config';
-import { EmailController } from './email.controller';
-import { SendgridService } from './sendgrid.service';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        auth: {
+          user: 'houssin.carnelian@gmail.com',
+          pass: 'ioavhhliwnqmylas',
+        },
+      }
+    }),
     TypeOrmModule.forRoot({
     type: 'postgres',
     database: 'testDB',
@@ -21,8 +31,9 @@ import { SendgridService } from './sendgrid.service';
     synchronize: true,
   }),
   UserModule,
+  EmailModule,
 ],
-  controllers: [EmailController],
-  providers: [SendgridService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

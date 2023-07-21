@@ -1,14 +1,15 @@
-import { BadRequestException,Body, Controller, Get, HttpCode, Post, Req, Res, UnauthorizedException, UseGuards,Request } from '@nestjs/common';
+import { BadRequestException,Body, Controller, Get, HttpCode, Post, Req, Res, UnauthorizedException, UseGuards,Request, InternalServerErrorException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserGuard } from './user.guard';
 
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { EmailService } from 'src/email/email.service';
 
 @Controller()
 export class UserController {
-    constructor( private userService:UserService,private jwtService: JwtService){}
+    constructor( private userService:UserService,private jwtService: JwtService, private mailService:EmailService){}
     @Post("register")
    async register(@Body() body:any){
         if(body.password !== body.password_confirm){
@@ -17,12 +18,20 @@ export class UserController {
         const saltOrRounds = 12;
         const password = body.password;
         
-        return this.userService.save({
+        await this.userService.save({
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
             password: await bcrypt.hash(password,saltOrRounds)
         })
+        try {
+            await this.mailService.sendEmail(body.email,body.firstName);
+            return "user registerd successfully"
+        } catch (error) {
+            // Handle any potential errors that occur during email sending
+            // For example, log the error or throw a custom exception
+            throw new InternalServerErrorException("Failed to send email");
+        }
     }
 
     
