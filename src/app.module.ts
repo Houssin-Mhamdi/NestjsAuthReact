@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { SendGridModule } from '@anchan828/nest-sendgrid';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 import { ConfigModule } from '@nestjs/config';
+import { PostsModule } from './posts/posts.module';
+import { Post } from './posts/entities/post.entity';
 
 
 @Module({
@@ -27,11 +28,12 @@ import { ConfigModule } from '@nestjs/config';
     port: 5432,
     username: 'postgres',
     password: 'postgres',
-    entities: [User],
+    entities: [User,Post],
     synchronize: true,
   }),
   UserModule,
   EmailModule,
+  PostsModule,
 ],
   controllers: [],
   providers: [],

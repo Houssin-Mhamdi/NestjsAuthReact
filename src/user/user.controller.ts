@@ -18,7 +18,7 @@ export class UserController {
         const saltOrRounds = 12;
         const password = body.password;
         
-        await this.userService.save({
+       const user =  await this.userService.save({
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
@@ -26,7 +26,7 @@ export class UserController {
         })
         try {
             await this.mailService.sendEmail(body.email,body.firstName);
-            return "user registerd successfully"
+            return {user:user}
         } catch (error) {
             // Handle any potential errors that occur during email sending
             // For example, log the error or throw a custom exception
